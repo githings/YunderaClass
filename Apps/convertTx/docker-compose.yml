@@ -14,7 +14,7 @@ services:
     environment:
       - PUID=0
       - PGID=0
-      - JWT_SECRET=$default_pwd # aLongAndSecretStringUsedToSignTheJSONWebToken1234 # will use randomUUID() if unset
+      - JWT_SECRET=aLongAndSecretStringUsedToSignTheJSONWebToken1234 # will use randomUUID() if unset
       - ACCOUNT_REGISTRATION=false
       - HTTP_ALLOWED=true # uncomment this if accessing it over a non-https connection
       - ALLOW_UNAUTHENTICATED=false
