@@ -42,8 +42,8 @@ x-casaos:
     - arm64
   main: converTx # UI에 보여줄 이름
   pre-installed-cmd: |
-    # mkdir -p /DATA/AppData/$AppID/data &&
-    # chmod -R 777 /DATA/AppData/$AppID/$AppID.data
+    mkdir -p /DATA/AppData/$AppID/data &&
+    chmod -R 777 /DATA/AppData/$AppID/$AppID.data
   author: baekikjun
   category: Utilities
   developer: C4illin
@@ -64,7 +64,7 @@ x-casaos:
     es_es: Tu kit completo de herramientas PDF en tu navegador
   description:
     en_us: |
-      **Your complete PDF toolkit - everything you need to work with PDF files, right from your web browser.**
+      **Your complete PDF toolkit - everything you cneed to work with PDF files, right from your web browser.**
     ko_kr: |
       **이거는 마크업인가? 디스크립션.**
   tips:
