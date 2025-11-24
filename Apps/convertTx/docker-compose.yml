@@ -2,12 +2,12 @@
 name: ConverTx
 
 services:
-  convertx:
-    image: ghcr.io/c4illin/convertx:v.0.14.1
-    container_name: convertx
+  ConverTx:
+    image: ghcr.io/c4illin/ConverTx:v.0.14.1
+    container_name: ConverTx
     restart: unless-stopped
-    ports:
-      - "3000:3000"
+    # ports:
+    #   - "3000:3000"
     expose:
       - 3000
     user: 0:0 # $PUID:$PGID
@@ -40,7 +40,7 @@ x-casaos:
   architecture:
     - amd64
     - arm64
-  main: converTx # UI에 보여줄 이름
+  main: ConverTx # UI에 보여줄 이름
   pre-installed-cmd: |
     mkdir -p /DATA/AppData/$AppID/data &&
     chmod -R 777 /DATA/AppData/$AppID/$AppID.data
