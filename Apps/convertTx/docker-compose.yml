@@ -1,0 +1,79 @@
+# docker-compose.yml
+name: ConverTx
+
+services:
+  convertx:
+    image: ghcr.io/c4illin/convertx:v.0.14.1
+    container_name: convertx
+    restart: unless-stopped
+    # ports:
+    #   - "3000:3000"
+    expose:
+      - 3000
+    user: 0:0 # $PUID:$PGID
+    environment:
+      - PUID=0
+      - PGID=0
+      - JWT_SECRET=$default_pwd # aLongAndSecretStringUsedToSignTheJSONWebToken1234 # will use randomUUID() if unset
+      - ACCOUNT_REGISTRATION=false
+      - HTTP_ALLOWED=true # uncomment this if accessing it over a non-https connection
+      - ALLOW_UNAUTHENTICATED=false
+      - AUTO_DELETE_EVERY_N_HOURS=24
+    deploy:
+      resource:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+    volumes:
+      - /DATA/AppData/$AppID/data:/app/data
+      - /DATA/downloads:/downloads:ro
+      - /DATA/Documents:/documents:ro
+      # - ./data:/app/data
+
+    healthcheck:
+      test: ["CMD", "wget", "-spider", "--tries=1", "http://localhost:3000/"]
+      interval: 30s
+      retries: 3
+      start_period: 60s
+
+x-casaos:
+  architecture:
+    - amd64
+    - arm64
+  main: converTx # UI에 보여줄 이름
+  pre-installed-cmd: |
+    # mkdir -p /DATA/AppData/$AppID/data &&
+    # chmod -R 777 /DATA/AppData/$AppID/$AppID.data
+  author: baekikjun
+  category: Utilities
+  developer: C4illin
+  icon: https://cdn.jsdelivr.net/gh/githings/AppStore@main/Apps/Stirling-PDF/icon.png
+  screenshot_link:
+    - https://cdn.jsdelivr.net/gh/githings/AppStore@main/Apps/Stirling-PDF/screenshot-1.png
+    - https://cdn.jsdelivr.net/gh/githings/AppStore@main/Apps/Stirling-PDF/screenshot-2.png
+    - https://cdn.jsdelivr.net/gh/githings/AppStore@main/Apps/Stirling-PDF/screenshot-3.png
+  thumbnail: https://cdn.jsdelivr.net/gh/githings/AppStore@main/Apps/Stirling-PDF/thumbnail.png
+  title:
+    en_us: Stirling PDF
+    ko_kr: 스티얼링? 피댑프
+  tagline:
+    en_us: Your complete PDF toolkit in your browser
+    ko_kr: 브라우저 밖에는 없는 모든 것을 다 바꿔주는 PDF 툴킷(tl)
+    zh_cn: 浏览器中的完整PDF工具包
+    fr_fr: Votre boîte à outils PDF complète dans votre navigateur
+    es_es: Tu kit completo de herramientas PDF en tu navegador
+  description:
+    en_us: |
+      **Your complete PDF toolkit - everything you need to work with PDF files, right from your web browser.**
+    ko_kr: |
+      **이거는 마크업인가? 디스크립션.**
+  tips:
+    before_install:
+      en_us: |
+        **⏰ Setup Time:**
+        This app takes about 5-10 minutes to set up after installation. Please be patient and wait before trying to access it.
+      ko_kr: |
+        이건 또 한국어
+
+  index: /
+  webui_port: 3000
