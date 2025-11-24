@@ -15,7 +15,8 @@ services:
       - ACCOUNT_REGISTRATION=false
       - HTTP_ALLOWED=true
       - ALLOW_UNAUTHENTICATED=false
-
+      # 타임아웃이 필요한 경우 ConvertX 문서에서 올바른 변수명을 확인하세요
+      # 예시: UNAUTHENTICATED_TIMEOUT=24
     deploy:
       resources:
         limits:
@@ -65,4 +66,4 @@ x-casaos:
       ko_kr: |
        before_install 한국어입니다.
   index: /
-  webui_port: 3000 
+  webui_port: 3000
