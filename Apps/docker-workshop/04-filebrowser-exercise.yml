@@ -1,0 +1,162 @@
+# ============================================================================
+# 실습 3: FileBrowser - 웹 기반 파일 관리자
+# ============================================================================
+# 💡 이 파일에는 12개의 빈칸이 있습니다
+# 📋 questions.md 파일의 객관식 문제를 보고 빈칸을 채우세요!
+# 🎯 특별 학습 포인트: 사용자 디렉토리 전체 접근!
+# ============================================================================
+
+name: __________(1)__________
+
+services:
+  filebrowser:
+    # 🔍 힌트: FileBrowser 공식 이미지, v2.23.0 버전
+    #          형식: 레지스트리/이미지이름:버전
+    image: __________(2)__________
+    
+    container_name: filebrowser
+    
+    # 🔍 힌트: 네트워크 모드
+    #          bridge = 기본 브릿지 네트워크 (일반적으로 생략 가능하지만 명시)
+    network_mode: __________(3)__________
+    
+    restart: unless-stopped
+    
+    # 🔍 힌트: /DATA 전체에 접근하므로 권한 필요!
+    #          environment에도 PUID/PGID 설정되어 있음
+    # user: __________(4)__________  # 실제로는 주석 처리됨 - FileBrowser가 environment로 처리
+    
+    environment:
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
+    
+    # 🔍 힌트: 웹 UI는 80 포트
+    expose:
+      - __________(5)__________
+    
+    volumes:
+      # 🔍 힌트: FileBrowser 설정 데이터베이스
+      - /DATA/AppData/$AppID/db:/db
+      
+      # 🔍 힌트: ⚠️ 중요! FileBrowser가 관리할 디렉토리
+      #          /DATA 전체를 /srv로 마운트
+      - __________(6)__________:/srv
+    
+    # 🔍 힌트: 사용자 대면 파일 관리 인터페이스
+    #          가이드: 80 = 사용자 대면 인터랙티브
+    cpu_shares: __________(7)__________
+    
+    # 볼륨 설명 (CasaOS UI용)
+    x-casaos:
+      envs:
+        - container: TZ
+          description:
+            en_us: TimeZone
+            zh_cn: 时区
+        - container: PUID
+          description:
+            en_us: Run FileBrowser as specified uid.
+            zh_cn: 以指定的用户ID运行FileBrowser
+        - container: PGID
+          description:
+            en_us: Run FileBrowser as specified gid.
+            zh_cn: 以指定的组ID运行FileBrowser
+      
+      volumes:
+        - container: /db
+          description:
+            en_us: FileBrowser database directory.
+            zh_cn: FileBrowser数据库目录
+        - container: /srv
+          description:
+            en_us: FileBrowser managed directory.
+            zh_cn: FileBrowser管理的目录
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+    - arm
+  
+  # 🔍 힌트: services 아래의 서비스 이름
+  main: __________(8)__________
+  
+  author: CasaOS Team
+  
+  # 🔍 힌트: 파일 관리 앱은 Cloud 카테고리
+  category: __________(9)__________
+  
+  developer: File Browser
+  
+  # 🔍 힌트: ⚠️ 특별 주의! 이 파일은 예외적으로 다른 fork 사용
+  #          BookJJun-IJ fork의 create 브랜치
+  #          형식: https://cdn.jsdelivr.net/gh/사용자명/레포@브랜치/Apps/앱이름/파일
+  icon: https://cdn.jsdelivr.net/gh/BookJJun-IJ/AppStore@create/Apps/FileBrowser/icon.png
+  
+  screenshot_link:
+    - https://cdn.jsdelivr.net/gh/BookJJun-IJ/AppStore@create/Apps/FileBrowser/screenshot-1.jpg
+    - https://cdn.jsdelivr.net/gh/BookJJun-IJ/AppStore@create/Apps/FileBrowser/screenshot-2.jpg
+    - https://cdn.jsdelivr.net/gh/BookJJun-IJ/AppStore@create/Apps/FileBrowser/screenshot-3.jpg
+  
+  thumbnail: https://cdn.jsdelivr.net/gh/BookJJun-IJ/AppStore@create/Apps/FileBrowser/thumbnail.jpg
+  
+  title:
+    en_us: FileBrowser
+  
+  tagline:
+    en_us: Upload, delete, preview, rename, edit and share your files.
+    ko_kr: 파일을 업로드, 삭제, 미리보기, 이름 변경, 편집 및 공유하세요.
+    zh_cn: 上传，删除，预览，重命名，编辑和共享您的文件。
+    fr_fr: Télécharger, supprimer, prévisualiser, renommer, modifier et partager vos fichiers.
+    es_es: Subir, eliminar, previsualizar, renombrar, editar y compartir sus archivos.
+  
+  description:
+    en_us: File Browser - Webbased File Browser including sharing functions etc.
+    ko_kr: 파일 브라우저 - 공유 기능 등을 포함한 웹 기반 파일 브라우저
+    zh_cn: File Browser - 包含分享功能等的Webbased文件浏览器
+    fr_fr: File Browser - Navigateur de fichiers Webbased incluant des fonctions de partage, etc.
+    es_es: File Browser - Navegador de archivos Webbased que incluye funciones de compartición, etc.
+  
+  # 🔍 힌트: 기본 계정 정보 제공
+  tips:
+    before_install:
+      en_us: |
+        Default Account
+
+        | Username | Password |
+        | -------- | -------- |
+        | `admin`  | `admin`  |
+      ko_kr: |
+        기본 계정
+
+        | 사용자명 | 비밀번호 |
+        | -------- | -------- |
+        | `admin`  | `admin`  |
+  
+  index: /
+  
+  # 🔍 힌트: expose한 포트와 일치
+  webui_port: __________(10)__________
+  
+  # 🔍 힌트: name과 동일 (소문자로)
+  store_app_id: __________(11)__________
+  
+  # 🔍 힌트: 일반 관리 앱
+  is_uncontrolled: __________(12)__________
+
+# ============================================================================
+# ✅ 완성 후 확인사항
+# ============================================================================
+# 1. PUID/PGID가 environment에 설정되어 있나요?
+# 2. /DATA 전체가 /srv로 마운트되어 있나요?
+# 3. 기본 계정이 tips에 명시되어 있나요?
+# 4. expose 포트와 webui_port가 일치하나요?
+# 5. asset URL이 BookJJun-IJ fork를 가리키나요? (특수 케이스!)
+# ============================================================================
+
+# 🎓 학습 포인트
+# - FileBrowser는 /DATA 전체에 접근합니다
+# - environment에서 PUID/PGID 설정하는 방식도 있습니다
+# - 일부 앱은 다른 fork의 asset을 사용할 수 있습니다 (예외적)
+# - 기본 계정이 있다면 tips에 명확히 안내해야 합니다!

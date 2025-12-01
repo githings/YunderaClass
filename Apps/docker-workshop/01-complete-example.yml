@@ -1,0 +1,282 @@
+# ============================================================================
+# Docker Compose 완전한 예제 - 복습용
+# ============================================================================
+# 이 파일은 오늘 배운 모든 개념을 포함하고 있습니다.
+# 실습 파일의 빈칸을 채울 때 참고하세요!
+# ============================================================================
+
+# 📌 1. 앱 이름 정의
+# - 소문자, 숫자, 하이픈(-), 언더스코어(_)만 사용 가능
+# - CasaOS에서 앱을 식별하는 고유한 ID로 사용됩니다
+name: example-app
+
+# 📌 2. Services 섹션
+# - Docker Compose의 핵심! 실행할 컨테이너들을 정의합니다
+services:
+  
+  # 서비스 이름 (자유롭게 지정 가능)
+  example-service:
+    
+    # 📌 2-1. 이미지 지정
+    # ⚠️ IMPORTANT: 절대 :latest 태그 사용 금지!
+    # ✅ GOOD: linuxserver/app:1.2.3
+    # ❌ BAD:  linuxserver/app:latest
+    image: linuxserver/example:1.0.0
+    
+    # 📌 2-2. 컨테이너 이름
+    # - 실제 Docker 컨테이너의 이름
+    container_name: example-app
+    
+    # 📌 2-3. 재시작 정책
+    # - unless-stopped: 수동으로 중지하지 않는 한 항상 재시작
+    restart: unless-stopped
+    
+    # 📌 2-4. 사용자 권한 설정
+    # 🔑 KEY CONCEPT: 권한 전략
+    # 
+    # Case 1: 사용자 디렉토리(/DATA/Documents, /DATA/Downloads 등) 접근
+    #   → user: $PUID:$PGID 필수!
+    #
+    # Case 2: AppData만 사용 (/DATA/AppData/앱이름/)
+    #   → user 지정 안 해도 됨 (CasaOS가 자동으로 PUID:PGID 적용)
+    #   → 특별히 root가 필요한 경우: user: "0:0" 명시
+    #
+    # Case 3: 혼합 사용 (AppData + 사용자 디렉토리)
+    #   → user: $PUID:$PGID 필수!
+    user: $PUID:$PGID
+    
+    # 📌 2-5. 포트 노출
+    # 🌐 NSL Router 통합 (중요!)
+    # 
+    # ✅ GOOD: expose 사용 (내부 네트워크에만 노출)
+    #   - NSL Router가 자동으로 HTTPS 도메인 생성
+    #   - 예: https://example-username.nsl.sh
+    #
+    # ⚠️ ports 사용은 특별한 경우만!
+    #   - Torrent 포트, API 포트 등 직접 접근이 필요한 경우
+    expose:
+      - 8080
+    
+    # ports를 사용하는 경우 (선택적)
+    # ports:
+    #   - "6881:6881"      # Torrent 포트 예시
+    #   - "6881:6881/udp"  # UDP 포트 예시
+    
+    # 📌 2-6. 환경 변수
+    # 💡 CasaOS 시스템 변수들:
+    #   - $PUID, $PGID: 사용자/그룹 ID (보통 1000:1000)
+    #   - $TZ: 시스템 타임존
+    #   - $default_pwd: CasaOS가 생성한 기본 비밀번호
+    #   - $AppID: 앱 이름 (name 값과 동일)
+    environment:
+      - TZ=$TZ                          # 타임존 설정
+      - PUID=$PUID                      # 사용자 ID
+      - PGID=$PGID                      # 그룹 ID
+      - WEBUI_PORT=8080                 # 웹 UI 포트 (앱마다 다름)
+      - PASSWORD=$default_pwd           # 기본 비밀번호
+    
+    # 📌 2-7. 볼륨 매핑
+    # 📁 디렉토리 구조:
+    #   /DATA/
+    #   ├── AppData/[앱이름]/     ← 앱 전용 데이터 (설정, DB 등)
+    #   ├── Documents/             ← 사용자 문서
+    #   ├── Downloads/             ← 다운로드 폴더
+    #   ├── Gallery/               ← 사진/이미지
+    #   └── Media/                 ← 미디어 파일
+    #       ├── Movies/
+    #       ├── Music/
+    #       └── TV Shows/
+    volumes:
+      # 앱 설정 디렉토리 (필수!)
+      - /DATA/AppData/$AppID/config:/app/config
+      
+      # 데이터베이스 (필요시)
+      - /DATA/AppData/$AppID/data:/app/data
+      
+      # 사용자 디렉토리 접근 (필요시)
+      - /DATA/Downloads:/downloads
+      - /DATA/Documents:/documents:ro  # :ro = 읽기 전용
+    
+    # 📌 2-8. CPU 공유 설정 (필수!)
+    # 🎯 CPU 우선순위 가이드:
+    #   100: 시스템 크리티컬 (예약)
+    #   90:  관리 도구 (CasaOS, Portainer)
+    #   80:  사용자 대면 인터랙티브 (웹 서버, API)
+    #   70:  무거운 작업이 있는 인터랙티브 (Nextcloud)
+    #   50:  일반 애플리케이션 (대부분의 앱)
+    #   30:  백그라운드 서비스 (백업, 로그)
+    #   20:  무거운 백그라운드 처리 (ML, 트랜스코딩)
+    #   10:  시스템 백그라운드 (예약)
+    cpu_shares: 50
+    
+    # 📌 2-9. 리소스 제한 (선택적)
+    # ⚠️ 대부분의 앱은 필요 없음!
+    # 리소스 고갈을 방지해야 하는 특별한 경우에만 사용
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 512M        # 메모리 제한
+    #       cpus: '1.0'         # CPU 제한
+    
+    # 📌 2-10. 헬스체크 (선택적)
+    # 컨테이너가 정상 작동하는지 확인
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--tries=1", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+# ============================================================================
+# 📌 3. CasaOS 메타데이터 (x-casaos)
+# ============================================================================
+# CasaOS 앱 스토어에 표시되는 정보들
+
+x-casaos:
+  
+  # 📌 3-1. 필수 필드
+  
+  # 메인 서비스 이름 (services 아래의 서비스 이름과 일치해야 함)
+  main: example-service
+  
+  # 웹 UI 포트 (expose한 포트와 일치해야 함)
+  webui_port: 8080
+  
+  # 지원 아키텍처
+  architectures:
+    - amd64
+    - arm64
+    # - arm      # 32비트 ARM (선택적)
+  
+  # 📌 3-2. 설치 전 명령어 (선택적)
+  # 🔧 사용 예시:
+  #   - 기본 설정 파일 생성
+  #   - 디렉토리 권한 설정
+  #   - 초기 사용자 계정 생성
+  #
+  # ⚠️ 보안 요구사항:
+  #   - 절대 :latest 태그 사용 금지! (특정 버전 명시)
+  #   - 사용자 디렉토리 작업 시 --user $PUID:$PGID 사용
+  #   - 여러 번 실행해도 안전하도록 작성 (멱등성)
+  pre-install-cmd: |
+    mkdir -p /DATA/AppData/$AppID/config &&
+    docker run --rm \
+      -v /DATA/AppData/$AppID:/data \
+      --user $PUID:$PGID \
+      ubuntu:22.04 \
+      chown -R $PUID:$PGID /data
+  
+  # 📌 3-3. 앱 정보
+  
+  author: Yundera Team
+  developer: Example Developer
+  category: Utilities
+  
+  # 아이콘 (필수!)
+  icon: https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/Example/icon.png
+  
+  # 스크린샷 (최소 1개 필수!)
+  screenshot_link:
+    - https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/Example/screenshot-1.png
+    - https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/Example/screenshot-2.png
+  
+  # 썸네일 (선택적, Featured 앱만)
+  thumbnail: https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/Example/thumbnail.png
+  
+  # 📌 3-4. 다국어 지원 (필수!)
+  # ⚠️ 최소 5개 언어 필요: en_us, ko_kr, zh_cn, fr_fr, es_es
+  
+  # 앱 제목
+  title:
+    en_us: Example Application
+  
+  # 태그라인 (한 줄 설명)
+  tagline:
+    en_us: A powerful example application for demonstration purposes
+    ko_kr: 데모 목적의 강력한 예제 애플리케이션
+    zh_cn: 用于演示目的的强大示例应用程序
+    fr_fr: Une application exemple puissante à des fins de démonstration
+    es_es: Una potente aplicación de ejemplo con fines de demostración
+  
+  # 상세 설명
+  description:
+    en_us: |
+      This is a comprehensive example application that demonstrates all the key concepts
+      of Docker Compose integration with CasaOS. It includes proper permission handling,
+      NSL Router integration, and follows all best practices.
+    ko_kr: |
+      이것은 CasaOS와 Docker Compose 통합의 모든 핵심 개념을 보여주는
+      종합적인 예제 애플리케이션입니다. 적절한 권한 처리, NSL Router 통합,
+      모든 모범 사례를 따릅니다.
+    zh_cn: |
+      这是一个全面的示例应用程序，演示了Docker Compose与CasaOS集成的
+      所有关键概念。它包括适当的权限处理、NSL Router集成，
+      并遵循所有最佳实践。
+    fr_fr: |
+      Il s'agit d'une application exemple complète qui démontre tous les concepts clés
+      de l'intégration de Docker Compose avec CasaOS. Elle inclut une gestion appropriée
+      des permissions, l'intégration NSL Router et suit toutes les meilleures pratiques.
+    es_es: |
+      Esta es una aplicación de ejemplo completa que demuestra todos los conceptos clave
+      de la integración de Docker Compose con CasaOS. Incluye manejo adecuado de permisos,
+      integración NSL Router y sigue todas las mejores prácticas.
+  
+  # 📌 3-5. 설치 전 안내 (선택적)
+  # 사용자에게 기본 계정 정보 등을 알려줄 때 사용
+  tips:
+    before_install:
+      en_us: |
+        **Default Account**
+        
+        | Username | Password |
+        | -------- | -------- |
+        | `admin`  | `$default_pwd` |
+        
+        Access via: `https://example-[username].nsl.sh`
+  
+  # 웹 UI 진입점 경로
+  index: /
+  
+  # 앱 스토어 ID (name과 동일)
+  store_app_id: example-app
+  
+  # 관리되지 않는 앱인지 여부 (보통 false)
+  is_uncontrolled: false
+
+# ============================================================================
+# 📚 핵심 개념 요약
+# ============================================================================
+#
+# 1. 이미지는 항상 특정 버전 태그 사용! (:latest 금지)
+#
+# 2. 권한 설정 (user):
+#    - 사용자 디렉토리 접근 시: user: $PUID:$PGID
+#    - AppData만 사용: user 생략 가능 (자동 적용)
+#    - root 필요 시: user: "0:0" 명시
+#
+# 3. 포트 노출:
+#    - 웹 UI: expose 사용 (NSL Router가 HTTPS 처리)
+#    - 기타 포트: ports 사용 (직접 접근 필요 시)
+#
+# 4. CPU shares 필수! (50이 기본값)
+#
+# 5. 볼륨은 항상 /DATA 아래에 매핑
+#    - 앱 데이터: /DATA/AppData/$AppID/
+#    - 사용자 데이터: /DATA/Documents, /DATA/Downloads 등
+#
+# 6. x-casaos 메타데이터:
+#    - main, webui_port는 필수!
+#    - 다국어 지원 (최소 5개 언어)
+#    - asset URL은 Yundera 레포지토리로
+#
+# ============================================================================
+# 🎓 학습 팁
+# ============================================================================
+#
+# 1. 이 파일을 참고하여 실습 파일의 빈칸을 채우세요
+# 2. 각 섹션의 주석을 꼼꼼히 읽어보세요
+# 3. 실제 앱들은 이 구조를 기반으로 세부사항만 다릅니다
+# 4. 막히는 부분이 있으면 이 파일로 돌아와서 확인하세요!
+#
+# 화이팅! 💪
+# ============================================================================
