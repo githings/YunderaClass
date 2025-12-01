@@ -1,0 +1,197 @@
+# ============================================================================
+# 실습 4: Stirling PDF - PDF 편집 도구 (도전 과제! 🚀)
+# ============================================================================
+# 💡 이 파일에는 16개의 빈칸이 있습니다
+# 📋 questions.md 파일의 객관식 문제를 보고 빈칸을 채우세요!
+# 🎯 특별 학습 포인트: 복잡한 환경 변수 설정과 여러 볼륨 매핑!
+# ============================================================================
+
+name: stirling-pdf
+
+services:
+  stirling-pdf:
+    # 🔍 힌트: stirlingtools 이미지, v2.0.0 버전
+    #          형식: stirlingtools/이미지이름:버전
+    image: __________(1)__________
+    
+    container_name: stirling-pdf
+    restart: unless-stopped
+    
+    # 🔍 힌트: PDF 파일 접근이 필요하므로 권한 설정
+    #          Documents 폴더 접근 필요
+    user: __________(2)__________
+    
+    # 🔍 힌트: PDF 처리는 메모리를 많이 사용
+    #          최소 2G, 권장 4G
+    deploy:
+      resources:
+        limits:
+          memory: __________(3)__________
+    
+    # 🔍 힌트: 웹 UI 포트는 8080
+    expose:
+      - __________(4)__________
+    
+    environment:
+      # 🔍 힌트: 로그인 기능 활성화 (true/false)
+      #          보안을 위해 로그인 활성화 권장
+      - SECURITY_ENABLELOGIN=__________(5)__________
+      
+      # 🔍 힌트: 초기 관리자 계정 설정
+      - SECURITY_INITIALLOGIN_USERNAME=admin
+      - SECURITY_INITIALLOGIN_PASSWORD=$default_pwd
+      
+      # 🔍 힌트: 지원 언어 설정 (쉼표로 구분)
+      #          최소 5개: en_US, ko_KR, zh_CN, fr_FR, es_ES
+      - LANGS=en_US,ko_KR,zh_CN,fr_FR,es_ES,de_DE,ja_JP
+      
+      # 🔍 힌트: 기본 언어 설정
+      - SYSTEM_DEFAULTLOCALE=__________(6)__________
+      
+      # 🔍 힌트: 앱 이름 커스터마이징
+      - UI_APPNAME=Stirling PDF
+      
+      # 🔍 힌트: 홈 설명
+      - UI_HOMEDESCRIPTION=Your locally hosted one-stop-shop for all your PDF needs
+    
+    volumes:
+      # 🔍 힌트: OCR 언어 데이터 (Tesseract)
+      #          AppData 아래에 tessdata 디렉토리
+      - /DATA/AppData/$AppID/tessdata:/usr/share/tessdata:rw
+      
+      # 🔍 힌트: 앱 설정 파일
+      - /DATA/AppData/$AppID/config:/configs:rw
+      
+      # 🔍 힌트: 로그 파일
+      - /DATA/AppData/$AppID/logs:/logs:rw
+      
+      # 🔍 힌트: PDF 파일 접근 (읽기 전용)
+      #          사용자가 편집할 PDF 파일들
+      - /DATA/Documents:/documents:__________(7)__________
+      - /DATA/Downloads:/downloads:__________(8)__________
+    
+    # 🔍 힌트: PDF 편집은 인터랙티브 + 무거운 처리
+    #          가이드: 70 = 무거운 작업이 있는 인터랙티브
+    cpu_shares: __________(9)__________
+    
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/api/v1/info/status | grep -q 'UP' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  
+  # 🔍 힌트: services 아래의 서비스 이름
+  main: __________(10)__________
+  
+  author: Yundera Team
+  
+  # 🔍 힌트: PDF 편집 도구는 Utilities 카테고리
+  category: __________(11)__________
+  
+  developer: Stirling Tools
+  
+  # 🔍 힌트: Yundera 레포지토리 사용
+  icon: https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/Stirling-PDF/icon.png
+  
+  screenshot_link:
+    - https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/Stirling-PDF/screenshot-1.png
+    - https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/Stirling-PDF/screenshot-2.png
+    - https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/Stirling-PDF/screenshot-3.png
+  
+  thumbnail: https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/Stirling-PDF/thumbnail.png
+  
+  title:
+    en_us: Stirling PDF
+  
+  tagline:
+    en_us: Powerful locally-hosted web-based PDF manipulation tool
+    ko_kr: 강력한 로컬 호스팅 웹 기반 PDF 편집 도구
+    zh_cn: 强大的本地托管基于Web的PDF处理工具
+    fr_fr: Outil puissant de manipulation de PDF basé sur le web hébergé localement
+    es_es: Herramienta poderosa de manipulación de PDF basada en web alojada localmente
+  
+  description:
+    en_us: Stirling PDF is a robust, locally hosted web-based PDF manipulation tool. It enables you to perform various operations on PDF files, including splitting, merging, converting, reorganizing, adding images, rotating, compressing, and more. Features include OCR support, digital signatures, watermarking, and extensive format conversion capabilities. All processing happens locally on your server, ensuring complete privacy and security.
+    ko_kr: Stirling PDF는 강력한 로컬 호스팅 웹 기반 PDF 편집 도구입니다. PDF 파일 분할, 병합, 변환, 재구성, 이미지 추가, 회전, 압축 등 다양한 작업을 수행할 수 있습니다. OCR 지원, 디지털 서명, 워터마크, 광범위한 형식 변환 기능을 포함합니다. 모든 처리는 서버에서 로컬로 이루어져 완전한 개인정보 보호와 보안을 보장합니다.
+    zh_cn: Stirling PDF是一个强大的本地托管基于Web的PDF处理工具。它使您能够对PDF文件执行各种操作,包括拆分、合并、转换、重组、添加图像、旋转、压缩等。功能包括OCR支持、数字签名、水印和广泛的格式转换功能。所有处理都在您的服务器上本地进行,确保完全的隐私和安全。
+    fr_fr: Stirling PDF est un outil robuste de manipulation de PDF basé sur le web hébergé localement. Il vous permet d'effectuer diverses opérations sur les fichiers PDF, notamment diviser, fusionner, convertir, réorganiser, ajouter des images, faire pivoter, compresser, etc. Les fonctionnalités incluent la prise en charge OCR, les signatures numériques, le filigrane et les capacités de conversion de format étendues. Tout le traitement se fait localement sur votre serveur, garantissant une confidentialité et une sécurité complètes.
+    es_es: Stirling PDF es una herramienta robusta de manipulación de PDF basada en web alojada localmente. Le permite realizar varias operaciones en archivos PDF, incluidas dividir, fusionar, convertir, reorganizar, agregar imágenes, rotar, comprimir y más. Las características incluyen soporte OCR, firmas digitales, marcas de agua y amplias capacidades de conversión de formato. Todo el procesamiento ocurre localmente en su servidor, garantizando privacidad y seguridad completas.
+  
+  tips:
+    before_install:
+      en_us: |
+        **Default Account (when login enabled)**
+        
+        | Username | Password |
+        | -------- | -------- |
+        | `admin`  | `$default_pwd` |
+        
+        **Features:**
+        - Split, Merge, Convert PDFs
+        - OCR (Optical Character Recognition)
+        - Digital Signatures & Watermarks
+        - Image Extraction & Manipulation
+        - Form Filling & Flattening
+        - Redaction & Security
+        
+        Access via: `https://stirling-pdf-[username].nsl.sh`
+        
+        **Note**: First startup may take longer as it initializes OCR languages.
+      ko_kr: |
+        **기본 계정 (로그인 활성화 시)**
+        
+        | 사용자명 | 비밀번호 |
+        | -------- | -------- |
+        | `admin`  | `$default_pwd` |
+        
+        **기능:**
+        - PDF 분할, 병합, 변환
+        - OCR (광학 문자 인식)
+        - 디지털 서명 및 워터마크
+        - 이미지 추출 및 편집
+        - 양식 작성 및 평면화
+        - 편집 및 보안
+        
+        접속: `https://stirling-pdf-[username].nsl.sh`
+        
+        **참고**: 첫 시작 시 OCR 언어 초기화로 시간이 걸릴 수 있습니다.
+  
+  index: /
+  
+  # 🔍 힌트: expose한 포트와 일치
+  webui_port: __________(12)__________
+  
+  # 🔍 힌트: name과 동일 (하이픈 포함)
+  store_app_id: __________(13)__________
+  
+  # 🔍 힌트: 일반 관리 앱
+  is_uncontrolled: __________(14)__________
+
+# ============================================================================
+# ✅ 완성 후 확인사항
+# ============================================================================
+# 1. user 설정이 올바른가요? (Documents 접근 필요!)
+# 2. 로그인이 활성화되어 있나요? (SECURITY_ENABLELOGIN)
+# 3. 다국어 지원이 5개 이상인가요?
+# 4. 볼륨이 올바르게 매핑되어 있나요?
+#    - tessdata: OCR 언어 데이터
+#    - config: 설정 파일
+#    - logs: 로그 파일
+#    - documents/downloads: PDF 파일 (읽기 전용)
+# 5. 메모리가 충분한가요? (최소 2G, 권장 4G)
+# 6. expose 포트와 webui_port가 일치하나요?
+# ============================================================================
+
+# 🎓 학습 포인트
+# - Stirling PDF는 복잡한 환경 변수를 많이 사용합니다
+# - OCR 기능을 위해 tessdata 볼륨이 필요합니다
+# - 보안을 위해 로그인 기능 활성화를 권장합니다
+# - 다국어 지원으로 글로벌 사용자를 고려합니다
+# - healthcheck로 앱 상태를 모니터링합니다
+# - PDF 처리는 CPU/메모리를 많이 사용하므로 적절한 리소스 할당이 중요합니다!
