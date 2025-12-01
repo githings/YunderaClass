@@ -39,10 +39,12 @@ services:
     volumes:
       # 🔍 힌트: qBittorrent 설정은 AppData에 저장
       #          $AppID 변수 사용
-      - /DATA/AppData/$AppID/config:/qBittorrent/config
+      # - /DATA/AppData/$AppID/config:/qBittorrent/config
+      - /DATA/AppData/qbittorrent/config/:/config
       
       # 🔍 힌트: 다운로드 파일은 Downloads 폴더에 저장
-      - /DATA/Downloads:/download
+      # - /DATA/Downloads:/download
+      - /DATA/Downloads/:/downloads
     
     # 🔍 힌트: 백그라운드 다운로드 서비스
     #          가이드: 20 = 무거운 백그라운드, 30 = 백그라운드 서비스
