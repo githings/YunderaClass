@@ -15,7 +15,7 @@ services:
     
     # 🔍 힌트: LinuxServer.io 이미지, 5.1.2 버전 사용
     #          형식: lscr.io/linuxserver/이미지이름:버전
-    image: lscr.io/linuxserver/qbittorrent:5.1.2
+    image: lscr.io/linuxserver/qbittorrent:5.1.1
     
     container_name: qbittorrent
     restart: unless-stopped
@@ -48,7 +48,7 @@ services:
     
     # 🔍 힌트: 백그라운드 다운로드 서비스
     #          가이드: 20 = 무거운 백그라운드, 30 = 백그라운드 서비스
-    cpu_shares: 50
+    cpu_shares: 10
     
     deploy:
       resources:
@@ -95,7 +95,7 @@ x-casaos:
   # 🔍 힌트: Yundera 레포지토리 URL 사용
   #          형식: https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/앱이름/파일이름
   # icon: https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/qbittorrent/icon.png
-  icon: https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/Stirling-PDF/icon.png
+  icon: https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/qBittorrent/icon.png
   
   screenshot_link:
     - https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/qBittorrent/screenshot-1.png
