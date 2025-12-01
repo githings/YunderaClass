@@ -15,7 +15,7 @@ services:
     
     # 🔍 힌트: LinuxServer.io 이미지, 5.1.2 버전 사용
     #          형식: lscr.io/linuxserver/이미지이름:버전
-    image: linuxserver/app:5.1.2
+    image: lscr.io/linuxserver/qbittorrent:5.1.2
     
     container_name: qbittorrent
     restart: unless-stopped
@@ -23,7 +23,7 @@ services:
     # 🔍 힌트: NSL Router를 사용하므로 ports가 아닌 expose 사용
     #          웹 UI는 80 포트 사용
     expose:
-      - 8080
+      - 80
     
     # Torrent 포트는 직접 노출 필요 (주석 제거하면 사용 가능)
     #ports:
@@ -33,13 +33,13 @@ services:
     environment:
       - TZ=$TZ
       # 🔍 힌트: qBittorrent 웹 UI가 사용할 포트 번호
-      - WEBUI_PORT=8080
+      - WEBUI_PORT=80
       - TORRENTING_PORT=6881
     
     volumes:
       # 🔍 힌트: qBittorrent 설정은 AppData에 저장
       #          $AppID 변수 사용
-      - /DATA/AppData/$AppID/config:/app/config
+      - /DATA/AppData/$AppID/config:/qBittorrent/config
       
       # 🔍 힌트: 다운로드 파일은 Downloads 폴더에 저장
       - /DATA/Downloads:/download
@@ -58,7 +58,7 @@ x-casaos:
   main: qbittorrent
   
   # 🔍 힌트: expose한 포트와 동일해야 함
-  webui_port: 8080
+  webui_port: 80
   
   # 🔍 힌트: 설치 전에 실행할 명령어
   #          qBittorrent 설정 파일 생성 및 기본 계정 설정
