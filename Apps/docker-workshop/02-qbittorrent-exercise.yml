@@ -6,24 +6,24 @@
 # ============================================================================
 
 # 🔍 힌트: 앱 이름은 소문자로, 특수문자는 하이픈만 사용 가능
-name: __________(1)__________
+name: qbittorrent
 
 services:
   qbittorrent:
     # 🔍 힌트: 사용자 디렉토리(/DATA/Downloads)에 접근하므로 권한 설정 필요!
-    user: __________(2)__________
+    user: $PUID:$PGID
     
     # 🔍 힌트: LinuxServer.io 이미지, 5.1.2 버전 사용
     #          형식: lscr.io/linuxserver/이미지이름:버전
-    image: __________(3)__________
+    image: linuxserver/app:5.1.2
     
     container_name: qbittorrent
     restart: unless-stopped
     
     # 🔍 힌트: NSL Router를 사용하므로 ports가 아닌 expose 사용
     #          웹 UI는 80 포트 사용
-    ____(4)____:
-      - __________(5)__________
+    expose:
+      - 8080
     
     # Torrent 포트는 직접 노출 필요 (주석 제거하면 사용 가능)
     #ports:
@@ -33,20 +33,20 @@ services:
     environment:
       - TZ=$TZ
       # 🔍 힌트: qBittorrent 웹 UI가 사용할 포트 번호
-      - WEBUI_PORT=__________(6)__________
+      - WEBUI_PORT=8080
       - TORRENTING_PORT=6881
     
     volumes:
       # 🔍 힌트: qBittorrent 설정은 AppData에 저장
       #          $AppID 변수 사용
-      - __________(7)__________:/config
+      - /DATA/AppData/$AppID/config:/app/config
       
       # 🔍 힌트: 다운로드 파일은 Downloads 폴더에 저장
-      - __________(8)__________:/downloads
+      - /DATA/Downloads:/download
     
     # 🔍 힌트: 백그라운드 다운로드 서비스
     #          가이드: 20 = 무거운 백그라운드, 30 = 백그라운드 서비스
-    cpu_shares: __________(9)__________
+    cpu_shares: 50
     
     deploy:
       resources:
@@ -55,10 +55,10 @@ services:
 
 x-casaos:
   # 🔍 힌트: services 아래의 서비스 이름과 동일
-  main: __________(10)__________
+  main: qbittorrent
   
   # 🔍 힌트: expose한 포트와 동일해야 함
-  webui_port: __________(11)__________
+  webui_port: 8080
   
   # 🔍 힌트: 설치 전에 실행할 명령어
   #          qBittorrent 설정 파일 생성 및 기본 계정 설정
@@ -79,20 +79,21 @@ x-casaos:
   
   # 🔍 힌트: 지원하는 CPU 아키텍처 (2개)
   architectures:
-    - __________(12)__________
-    - __________(13)__________
+    - amd64
+    - arm64
   
   author: Yundera Team
   
   # 🔍 힌트: 다운로드 관련 앱
   #          옵션: Backup, Cloud, Downloader, Media, Utilities
-  category: __________(14)__________
+  category: Downloader
   
   developer: qBittorrent Project
   
   # 🔍 힌트: Yundera 레포지토리 URL 사용
   #          형식: https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/앱이름/파일이름
-  icon: __________(15)__________
+  # icon: https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/qbittorrent/icon.png
+  icon: https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/Stirling-PDF/icon.png
   
   screenshot_link:
     - https://cdn.jsdelivr.net/gh/Yundera/AppStore@main/Apps/qBittorrent/screenshot-1.png
@@ -110,7 +111,7 @@ x-casaos:
   
   # 🔍 힌트: 앱 제목은 보통 앱 이름과 동일
   title:
-    en_us: __________(16)__________
+    en_us: qbittorrent
   
   description:
     en_us: qBittorrent is a cross-platform free and open-source BitTorrent client with a clean, simple interface and powerful features including sequential downloading, bandwidth scheduling, and RSS feed support.
@@ -120,11 +121,11 @@ x-casaos:
     es_es: qBittorrent es un cliente BitTorrent multiplataforma gratuito y de código abierto con una interfaz limpia y simple y características poderosas incluyendo descarga secuencial, programación de ancho de banda y soporte de feeds RSS.
   
   # 🔍 힌트: name 값과 동일
-  store_app_id: __________(17)__________
+  store_app_id: qbittorrent
   
   # 🔍 힌트: CasaOS가 관리하는 일반 앱
   #          true = 관리 안 함, false = 관리함
-  is_uncontrolled: __________(18)__________
+  is_uncontrolled: false
 
 # ============================================================================
 # ✅ 완성 후 확인사항

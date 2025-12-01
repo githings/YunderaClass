@@ -12,14 +12,14 @@ services:
   stirling-pdf:
     # 🔍 힌트: stirlingtools 이미지, v2.0.0 버전
     #          형식: stirlingtools/이미지이름:버전
-    image: __________(1)__________
+    image: ghcr.io/c4illin/ConverTx:v.0.14.1
     
     container_name: stirling-pdf
     restart: unless-stopped
     
     # 🔍 힌트: PDF 파일 접근이 필요하므로 권한 설정
     #          Documents 폴더 접근 필요
-    user: __________(2)__________
+    user: 0:0
     
     # 🔍 힌트: PDF 처리는 메모리를 많이 사용
     #          최소 2G, 권장 4G

@@ -15,7 +15,7 @@ b) `image: linuxserver/app:5.1.2`
 c) `image: linuxserver/app`  
 d) `image: linuxserver/app:stable`
 
-**정답: ______**
+**정답: b_**
 
 ---
 
@@ -25,7 +25,7 @@ b) `user: $PUID:$PGID`
 c) `user: 0:0`  
 d) user 필드 생략
 
-**정답: ______**
+**정답: b_**
 
 ---
 
@@ -35,7 +35,7 @@ b) `expose: - 8080`
 c) `publish: - 8080`  
 d) `bind: - 8080`
 
-**정답: ______**
+**정답: b_**
 
 ---
 
@@ -47,7 +47,7 @@ b) `qBittorrent`
 c) `QBittorrent`  
 d) `qb-torrent`
 
-**정답: ______**
+**정답: a_**
 
 ---
 
@@ -57,7 +57,7 @@ b) `user: $PUID:$PGID`
 c) `user: 0:0`  
 d) user 필드 생략
 
-**정답: ______**
+**정답: b_**
 
 ---
 
@@ -67,7 +67,7 @@ b) `linuxserver/qbittorrent:5.1.2`
 c) `lscr.io/linuxserver/qbittorrent:5.1.2`  
 d) `ghcr.io/linuxserver/qbittorrent:5.1.2`
 
-**정답: ______**
+**정답: c _**
 
 ---
 
@@ -77,7 +77,7 @@ b) `expose`
 c) `publish`  
 d) `network`
 
-**정답: ______**
+**정답: b__**
 
 ---
 
@@ -87,7 +87,7 @@ b) `8081`
 c) `80`  
 d) `443`
 
-**정답: ______**
+**정답: c__**
 
 ---
 
@@ -97,7 +97,7 @@ b) `443`
 c) `80`  
 d) `6881`
 
-**정답: ______**
+**정답: c__**
 
 ---
 
@@ -107,7 +107,7 @@ b) `/DATA/AppData/qBittorrent/config`
 c) `/DATA/AppData/$AppID/config`  
 d) `/DATA/qbittorrent/config`
 
-**정답: ______** (a 또는 c 둘 다 정답)
+**정답: a,c____** (a 또는 c 둘 다 정답)
 
 ---
 
@@ -117,7 +117,7 @@ b) `/DATA/Downloads`
 c) `/DATA/Download`  
 d) `/DATA/AppData/qbittorrent/downloads`
 
-**정답: ______**
+**정답: b___**
 
 ---
 
@@ -127,17 +127,17 @@ b) `20`
 c) `30`  
 d) `50`
 
-**정답: ______**
+**정답: _d__**
 
 ---
 
 ### Q1-10. x-casaos 섹션의 main 값은?
-a) `qbittorrent-service`  
+a) `qbittorrent-service`
 b) `qbittorrent`  
-c) `qBittorrent`  
+c) `qBittorrent`
 d) `torrent`
 
-**정답: ______**
+**정답: b___**
 
 ---
 
@@ -147,7 +147,7 @@ b) `6881`
 c) `80`  
 d) `443`
 
-**정답: ______**
+**정답: _c__**
 
 ---
 
@@ -157,7 +157,7 @@ b) `arm64`
 c) `arm`  
 d) `x86`
 
-**정답: ______, ______**
+**정답: a_, b__**
 
 ---
 
@@ -167,7 +167,7 @@ b) `Cloud`
 c) `Downloader`  
 d) `Media`
 
-**정답: ______**
+**정답: c__**
 
 ---
 
@@ -177,7 +177,7 @@ b) `Yundera/AppStore`
 c) `IceWhaleTech/CasaOS-AppStore`  
 d) `BookJJun-IJ/AppStore`
 
-**정답: ______**
+**정답: b__**
 
 ---
 
@@ -187,7 +187,7 @@ b) `qBittorrent`
 c) `QBittorrent`  
 d) `Qbittorrent`
 
-**정답: ______**
+**정답: _a__**
 
 ---
 
@@ -197,7 +197,7 @@ b) `qbittorrent`
 c) `qb-torrent`  
 d) `torrent`
 
-**정답: ______**
+**정답: _b___**
 
 ---
 
@@ -207,7 +207,7 @@ b) `false`
 c) `yes`  
 d) `no`
 
-**정답: ______**
+**정답: _b___**
 
 ---
 
